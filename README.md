@@ -1,82 +1,58 @@
-# GataVelhaAI
+# GataVelhaAI 🐱
 
-GataVelhaAI é um jogo da velha com temática de gatinhos, criado para rodar diretamente no navegador e também funcionar como aplicativo instalável (PWA).
+**GataVelhaAI** é um jogo da velha com gatinhos, desenvolvido por **Rofran Pires** (2026). Pode ser jogado diretamente no navegador e instalado no celular ou computador como um **PWA (Progressive Web App)**.
 
-## O que o projeto oferece
+## Principais recursos
 
-- jogo da velha com **tabuleiros 3x3, 4x4 e 5x5**;
-- modos **partida única, melhor de 3, melhor de 10 e infinito**;
-- quatro níveis de dificuldade contra a IA;
-- modo para **dois jogadores no mesmo aparelho**;
-- variações visuais com **gatos 3D, gatos 2D e símbolos X/O**;
-- ranking local e ranking global via **Firebase**;
-- funcionamento **offline** após a primeira carga do aplicativo;
-- instalação como app em celulares e computadores compatíveis.
+- Tabuleiros **3×3, 4×4 e 5×5** e metas de **3 ou 4 gatos** em sequência, dependendo do formato da rodada.
+- Partida única, melhor de 3, melhor de 10 e modo infinito.
+- Contra a IA (quatro dificuldades) ou dois jogadores no mesmo aparelho.
+- Gatos 3D, gatos 2D, X/O 3D e X/O 2D. Nos gatos 2D, o padrão é **Aleatório**, sorteando um dos cinco pares por rodada.
+- **Alternância de quem começa**: brancas, pretas, brancas e assim por diante.
+- **Modo inteligente**, opcional em **Configurações → Jogadores → Ritmo das rodadas**: identifica quando não existe mais nenhuma linha que qualquer equipe possa completar, pisca as casas vazias em vermelho e conclui a rodada como empate, mantendo pontuação, histórico e avanço de rodadas.
+- Ranking e histórico locais; login e ranking global opcionais via Firebase.
+- Salva preferências e séries locais automaticamente; exporta/importa backup JSON.
+- Instalação como PWA e funcionamento do **jogo local** offline após o cache inicial. Conexão e autenticação Firebase exigem internet.
 
-## Versão incluída
+## Pacote GitHub Pages / PWA — v1.7
 
-Este pacote inclui a versão **GataVelhaAI 1.6**.
+Arquivos principais:
 
-## Estrutura principal
+| Arquivo | Função |
+|---|---|
+| `index.html` | Página principal que o GitHub Pages abre automaticamente |
+| `GataVelhaAI1.7.html` | Cópia versionada do mesmo aplicativo |
+| `manifest.webmanifest` | Configuração de instalação PWA, tela inicial e ícones |
+| `sw.js` | Service Worker que guarda o jogo e ícones para uso offline |
+| `icons/` | Favicons, ícones para celulares e imagens `maskable` |
+| `.nojekyll` | Evita processamento Jekyll desnecessário no GitHub Pages |
+| `README.md` | Este guia |
 
-- `index.html` → arquivo principal para publicar no GitHub Pages;
-- `GataVelhaAI1.6.html` → cópia versionada do app;
-- `manifest.webmanifest` → manifesto do PWA;
-- `sw.js` → service worker para cache/offline;
-- `icons/` → ícones para favicon, instalação e atalhos;
-- `README.md` → este arquivo.
+## Publicação no GitHub Pages
+
+1. Crie um repositório no GitHub ou abra o repositório atual do GataVelhaAI.
+2. Extraia este ZIP e envie **o conteúdo da pasta**, incluindo `index.html`, `sw.js`, `manifest.webmanifest`, a pasta `icons/` e `.nojekyll`, para **a raiz** do repositório (não uma subpasta adicional).
+3. Vá para **Settings → Pages**. Em **Build and deployment**, escolha **Deploy from a branch**, branch `main` e diretório `/(root)`.
+4. Aguarde a publicação HTTPS. Abra o endereço do GitHub Pages no navegador e atualize para receber a versão 1.7.
+5. Nas **Configurações → Dados**, o **último botão é Instalar App**. Se o navegador oferecer a instalação nativa, aparece a confirmação. Se não, siga a orientação do menu do navegador.
+
+**Importante:** para instalar o PWA, abra o endereço do GitHub Pages por HTTPS. Um arquivo HTML aberto em `file://` não oferece instalação PWA. No Android Chrome, use **Instalar app** ou **Adicionar à tela inicial**; no iOS Safari, use **Compartilhar → Adicionar à Tela de Início**.
 
 ## Firebase
 
-O HTML já está configurado com o projeto Firebase informado:
+O HTML já contém a configuração pública do Firebase informada para o projeto `gatavelhaai`, usado para autenticação e ranking global. Para funcionar:
 
-- **projectId:** `gatavelhaai`
-- **authDomain:** `gatavelhaai.firebaseapp.com`
-- **storageBucket:** `gatavelhaai.firebasestorage.app`
+- Ative **Authentication** (provedor Anônimo e, opcionalmente, Google e E-mail/Senha).
+- Habilite **Cloud Firestore** e configure regras que permitam ler `gatovelhaai_ranking` publicamente e criar pontuações somente com autenticação.
+- Configure os domínios autorizados para login externo em **Authentication → Settings → Authorized domains**.
+- No jogo, habilite **Publicar pontuação no ranking global** caso queira enviar resultados ao Firestore.
 
-### Recursos ligados ao Firebase
+**Segurança:** o `apiKey` do Firebase Web é um identificador público do projeto, não substitui regras de segurança. Como o jogo é executado no cliente, a pontuação enviada pode ser manipulada; a validação rigorosa exigiria um backend.
 
-- autenticação anônima;
-- autenticação por popup (Google), se habilitada no console;
-- consulta e envio opcional de pontuações para ranking global no Firestore.
+## Dados e atualizações
 
-## Antes de publicar
+- O progresso local é guardado no navegador (armazenamento do mesmo endereço web).
+- Antes de limpar dados do navegador ou mudar o endereço do app, faça backup em **Configurações → Dados → Exportar backup JSON**.
+- O Service Worker usa cache versionado e remove caches anteriores do GataVelhaAI no momento da ativação.
 
-No console do Firebase, confirme que os seguintes recursos estão ativados:
-
-1. **Authentication**
-   - habilitar **Anônimo**;
-   - se desejar, habilitar também **Google**.
-
-2. **Cloud Firestore**
-   - criar o banco no modo desejado;
-   - ajustar as regras de segurança antes de abrir o ranking ao público.
-
-## Como publicar no GitHub Pages
-
-1. Crie um repositório no GitHub.
-2. Envie todos os arquivos deste pacote para a raiz do repositório.
-3. Nas configurações do repositório, abra **Pages**.
-4. Em **Build and deployment**, escolha:
-   - **Source:** `Deploy from a branch`
-   - **Branch:** `main` (ou a branch usada) / `/root`
-5. Salve.
-6. Aguarde o GitHub publicar a página.
-
-## Instalação como aplicativo
-
-Depois de publicado com HTTPS (como no GitHub Pages), o navegador compatível permitirá instalar o app.
-
-- Android/Chrome: opção **Instalar app** ou **Adicionar à tela inicial**;
-- Desktop/Chrome/Edge: ícone de instalação na barra do navegador;
-- iPhone/iPad/Safari: **Compartilhar → Adicionar à Tela de Início**.
-
-## Observações
-
-- O jogo continua funcionando localmente mesmo sem internet.
-- O ranking global depende da conexão com a internet e do Firebase ativo.
-- O service worker faz cache do shell principal e dos ícones para uso offline.
-
----
-
-Desenvolvido por **Rofran Pires** · 2026
+**Crédito:** Desenvolvido por Rofran Pires · 2026.
